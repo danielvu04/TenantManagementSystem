@@ -1,0 +1,300 @@
+<div class="property-detail-container">
+  <a routerLink="/properties" class="back-link">
+    <i class="fa fa-arrow-left"></i> Back to Properties
+  </a>
+
+  <!-- Loading state -->
+  <div *ngIf="loading" class="loading-spinner">
+    <p>Loading property details...</p>
+  </div>
+  
+  <!-- Error state -->
+  <div *ngIf="error && !loading" class="error-message">
+    <p>{{ error }}</p>
+  </div>
+  
+  <!-- Property details -->
+  <div *ngIf="property && !loading" class="property-details">
+    <!-- Property header -->
+    <div class="property-header">
+      <div class="property-title-container">
+        <h1 class="property-title">{{ property.name }}</h1>
+        <p class="property-address">{{ property.address }}</p>
+        <span class="property-status" [ngClass]="property.status">
+          {{ property.status | titlecase }}
+        </span>
+      </div>
+      <div class="action-buttons" *ngIf="isLandlord">
+        <button class="main-button" (click)="editProperty()">Edit Property</button>
+        <button class="secondary-button delete" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+
+    <div class="property-content">
+      <div class="main-content">
+        <!-- Property gallery -->
+        <div class="property-gallery">
+          <img [src]="selectedImage" alt="Property image" class="main-image">
+          <div class="thumbnail-container" *ngIf="property.images && property.images.length > 1">
+            <img *ngFor="let image of property.images" 
+                 [src]="image" 
+                 alt="Property thumbnail" 
+                 class="thumbnail" 
+                 [ngClass]="{'active': selectedImage === image}"
+                 (click)="selectImage(image)">
+          </div>
+        </div>
+
+        <!-- Property overview stats -->
+        <div class="property-stats">
+          <div class="stat-card">
+            <p class="stat-value">{{ property.units }}</p>
+            <p class="stat-label">Total Units</p>
+          </div>
+          <div class="stat-card">
+            <p class="stat-value">{{ property.occupiedUnits }}</p>
+            <p class="stat-label">Occupied Units</p>
+          </div>
+          <div class="stat-card">
+            <p class="stat-value">${{ property.income | number:'1.0-0' }}</p>
+            <p class="stat-label">Monthly Income</p>
+          </div>
+          <div class="stat-card">
+            <p class="stat-value">${{ property.expenses | number:'1.0-0' }}</p>
+            <p class="stat-label">Monthly Expenses</p>
+          </div>
+        </div>
+
+        <!-- Property information -->
+        <div class="section">
+          <div class="section-header">
+            <h3>Property Information</h3>
+          </div>
+          <div class="section-content">
+            <div class="property-info">
+              <div class="info-item" *ngIf="property.type">
+                <span class="info-label">Property Type</span>
+                <span class="info-value">{{ property.type }}</span>
+              </div>
+              <div class="info-item" *ngIf="property.yearBuilt">
+                <span class="info-label">Year Built</span>
+                <span class="info-value">{{ property.yearBuilt }}</span>
+              </div>
+              <div class="info-item" *ngIf="property.squareFootage">
+                <span class="info-label">Square Footage</span>
+                <span class="info-value">{{ property.squareFootage | number:'1.0-0' }} sq ft</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Status</span>
+                <span class="info-value">{{ property.status | titlecase }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Property description -->
+        <div class="section">
+          <div class="section-header">
+            <h3>Description</h3>
+          </div>
+          <div class="section-content">
+            <p class="description">{{ property.description }}</p>
+          </div>
+        </div>
+
+        <!-- Property units -->
+        <div class="section">
+          <div class="section-header">
+            <h3>Units</h3>
+            <button *ngIf="isLandlord" class="secondary-button" (click)="addUnit()">Add Unit</button>
+          </div>
+          <div class="section-content">
+            <table class="units-list" *ngIf="property.unitsList && property.unitsList.length > 0">
+              <thead>
+                <tr>
+                  <th>Unit #</th>
+                  <th>Type</th>
+                  <th>Bedrooms</th>
+                  <th>Bathrooms</th>
+                  <th>Size</th>
+                  <th>Rent</th>
+                  <th>Status</th>
+                  <th class="action-cell">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let unit of property.unitsList">
+                  <td>{{ unit.unitNumber }}</td>
+                  <td>{{ unit.type }}</td>
+                  <td>{{ unit.bedrooms }}</td>
+                  <td>{{ unit.bathrooms }}</td>
+                  <td>{{ unit.size }} sq ft</td>
+                  <td>${{ unit.rent | number:'1.0-0' }}</td>
+                  <td>
+                    <span class="status-badge" [ngClass]="unit.status">
+                      {{ unit.status | titlecase }}
+                    </span>
+                  </td>
+                  <td class="action-cell">
+                    <div class="unit-actions">
+                      <button (click)="viewUnit(unit.id)" title="View Unit">View</button>
+                      <button *ngIf="isLandlord" class="edit" (click)="editUnit(unit.id)" title="Edit Unit">Edit</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="empty-state" *ngIf="!property.unitsList || property.unitsList.length === 0">
+              <p>No units have been added to this property yet.</p>
+              <button *ngIf="isLandlord" class="main-button" (click)="addUnit()">Add First Unit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Property tenants -->
+        <div class="section" *ngIf="isLandlord">
+          <div class="section-header">
+            <h3>Tenants</h3>
+            <button class="secondary-button" (click)="addTenant()">Add Tenant</button>
+          </div>
+          <div class="section-content">
+            <table class="tenants-list" *ngIf="property.tenants && property.tenants.length > 0">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Unit</th>
+                  <th>Contact</th>
+                  <th>Lease Start</th>
+                  <th>Lease End</th>
+                  <th class="action-cell">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let tenant of property.tenants">
+                  <td>{{ tenant.firstName }} {{ tenant.lastName }}</td>
+                  <td>{{ tenant.unitNumber }}</td>
+                  <td>{{ tenant.email }}</td>
+                  <td>{{ tenant.leaseStart | date:'shortDate' }}</td>
+                  <td>{{ tenant.leaseEnd | date:'shortDate' }}</td>
+                  <td class="action-cell">
+                    <div class="tenant-actions">
+                      <button (click)="viewTenant(tenant.id)" title="View Tenant">View</button>
+                      <button (click)="viewLease(tenant.leaseId)" title="View Lease">Lease</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="empty-state" *ngIf="!property.tenants || property.tenants.length === 0">
+              <p>No tenants are currently associated with this property.</p>
+              <button class="main-button" (click)="addTenant()">Add First Tenant</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Maintenance requests -->
+        <div class="section">
+          <div class="section-header">
+            <h3>Maintenance Requests</h3>
+            <button class="secondary-button" (click)="createMaintenanceRequest()">
+              {{ isLandlord ? 'Create Request' : 'Submit Request' }}
+            </button>
+          </div>
+          <div class="section-content">
+            <table class="maintenance-list" *ngIf="property.maintenanceRequests && property.maintenanceRequests.length > 0">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Unit</th>
+                  <th>Date</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th class="action-cell">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let request of property.maintenanceRequests">
+                  <td>{{ request.title }}</td>
+                  <td>{{ request.unitNumber }}</td>
+                  <td>{{ request.dateSubmitted | date:'shortDate' }}</td>
+                  <td>
+                    <span class="status-badge" [ngClass]="request.priority">
+                      {{ request.priority | titlecase }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="status-badge" [ngClass]="request.status.replace(' ', '-')">
+                      {{ request.status | titlecase }}
+                    </span>
+                  </td>
+                  <td class="action-cell">
+                    <div class="maintenance-actions">
+                      <button (click)="viewMaintenanceRequest(request.id)" title="View Request">View</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="empty-state" *ngIf="!property.maintenanceRequests || property.maintenanceRequests.length === 0">
+              <p>No maintenance requests have been submitted for this property.</p>
+              <button class="main-button" (click)="createMaintenanceRequest()">
+                {{ isLandlord ? 'Create First Request' : 'Submit Request' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <!-- Financial overview -->
+        <div class="sidebar-card" *ngIf="isLandlord">
+          <div class="card-header">
+            <h3>Financial Overview</h3>
+          </div>
+          <div class="card-content">
+            <div class="financial-summary">
+              <div class="finance-item">
+                <span class="label">Monthly Income</span>
+                <span class="value income">${{ property.income | number:'1.0-0' }}</span>
+              </div>
+              <div class="finance-item">
+                <span class="label">Monthly Expenses</span>
+                <span class="value expense">${{ property.expenses | number:'1.0-0' }}</span>
+              </div>
+              <div class="finance-item" *ngIf="property.pendingPayments">
+                <span class="label">Pending Payments</span>
+                <span class="value pending">${{ property.pendingPayments | number:'1.0-0' }}</span>
+              </div>
+              <div class="separator"></div>
+              <div class="finance-item total">
+                <span class="label">Net Income</span>
+                <span class="value income">${{ property.income - property.expenses | number:'1.0-0' }}</span>
+              </div>
+            </div>
+            <button class="secondary-button" style="width: 100%; margin-top: 15px;" (click)="viewFinancialReports()">
+              View Financial Reports
+            </button>
+          </div>
+        </div>
+        
+        <!-- Quick actions -->
+        <div class="sidebar-card">
+          <div class="card-header">
+            <h3>Quick Actions</h3>
+          </div>
+          <div class="card-content">
+            <button class="secondary-button" style="width: 100%; margin-bottom: 10px;" (click)="createMaintenanceRequest()">
+              {{ isLandlord ? 'Create Maintenance Request' : 'Submit Maintenance Request' }}
+            </button>
+            <button *ngIf="isLandlord" class="secondary-button" style="width: 100%; margin-bottom: 10px;" (click)="addUnit()">
+              Add Unit
+            </button>
+            <button *ngIf="isLandlord" class="secondary-button" style="width: 100%;" (click)="addTenant()">
+              Add Tenant
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

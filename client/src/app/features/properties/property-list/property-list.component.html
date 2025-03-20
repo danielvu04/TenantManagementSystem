@@ -1,0 +1,133 @@
+<div class="property-list">
+  <div class="container">
+    <div class="page-header">
+      <h1>Properties</h1>
+      <div class="header-actions" *ngIf="isLandlord">
+        <button class="btn-primary" (click)="addProperty()">
+          <i class="fas fa-plus"></i> Add Property
+        </button>
+      </div>
+    </div>
+
+    <div class="filters">
+      <div class="search-box">
+        <input type="text" placeholder="Search properties..." [(ngModel)]="searchTerm" (input)="applyFilters()">
+        <button><i class="fas fa-search"></i></button>
+      </div>
+      
+      <div class="filter-group">
+        <select [(ngModel)]="filterOptions.status" (change)="applyFilters()">
+          <option value="all">All Status</option>
+          <option value="available">Available</option>
+          <option value="occupied">Occupied</option>
+          <option value="maintenance">Under Maintenance</option>
+        </select>
+      </div>
+      
+      <div class="filter-group" *ngIf="isLandlord">
+        <button class="btn-outline" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'">
+          <i class="fas fa-th"></i>
+        </button>
+        <button class="btn-outline" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Loading properties...</p>
+    </div>
+
+    <div *ngIf="!isLoading && properties.length === 0" class="empty-state">
+      <div class="empty-illustration">
+        <i class="fas fa-home"></i>
+      </div>
+      <h2>No properties found</h2>
+      <p *ngIf="isLandlord">Add your first property to get started.</p>
+      <p *ngIf="!isLandlord">There are no available properties at the moment.</p>
+      <button *ngIf="isLandlord" class="btn-primary" (click)="addProperty()">Add Property</button>
+    </div>
+
+    <div *ngIf="!isLoading && properties.length > 0" [ngClass]="{'property-grid': viewMode === 'grid', 'property-table': viewMode === 'list'}">
+      <!-- Grid View -->
+      <div *ngIf="viewMode === 'grid'" class="property-cards">
+        <div class="property-card" *ngFor="let property of properties">
+          <div class="property-image" [style.backgroundImage]="'url(' + (property.images && property.images.length ? property.images[0] : 'assets/images/property-placeholder.jpg') + ')'">
+            <div class="property-status" [ngClass]="property.status">{{ property.status }}</div>
+          </div>
+          <div class="property-details">
+            <h3>{{ property.name }}</h3>
+            <p class="property-address">{{ property.address }}</p>
+            <div class="property-stats">
+              <div class="stat">
+                <span class="stat-value">{{ property.units }}</span>
+                <span class="stat-label">Units</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">{{ property.occupiedUnits }}</span>
+                <span class="stat-label">Occupied</span>
+              </div>
+              <div class="stat" *ngIf="isLandlord">
+                <span class="stat-value">{{ property.income | currency }}</span>
+                <span class="stat-label">Income</span>
+              </div>
+            </div>
+            <div class="property-actions">
+              <button class="btn-primary" (click)="viewProperty(property._id)">View Details</button>
+              <button *ngIf="isLandlord" class="btn-outline" (click)="editProperty(property._id)">Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- List View -->
+      <table *ngIf="viewMode === 'list'" class="property-list-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Address</th>
+            <th>Units</th>
+            <th>Status</th>
+            <th *ngIf="isLandlord">Income</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let property of properties">
+            <td>
+              <div class="property-name">
+                <div class="property-thumbnail" [style.backgroundImage]="'url(' + (property.images && property.images.length ? property.images[0] : 'assets/images/property-placeholder.jpg') + ')'"></div>
+                <span>{{ property.name }}</span>
+              </div>
+            </td>
+            <td>{{ property.address }}</td>
+            <td>{{ property.occupiedUnits }}/{{ property.units }}</td>
+            <td><span class="status-badge" [ngClass]="property.status">{{ property.status }}</span></td>
+            <td *ngIf="isLandlord">{{ property.income | currency }}</td>
+            <td>
+              <div class="action-buttons">
+                <button class="btn-icon" (click)="viewProperty(property._id)" title="View Details">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button *ngIf="isLandlord" class="btn-icon" (click)="editProperty(property._id)" title="Edit Property">
+                  <i class="fas fa-edit"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>

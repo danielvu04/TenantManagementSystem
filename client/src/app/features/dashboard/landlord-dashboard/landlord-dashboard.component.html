@@ -1,0 +1,294 @@
+<div class="landlord-dashboard">
+  <div class="dashboard-header">
+    <div class="container">
+      <h1>Landlord Management Dashboard</h1>
+      <p>Manage your properties, tenants, and finances in one place.</p>
+    </div>
+  </div>
+  
+  <div class="overview-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Properties</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value">5</div>
+          <div class="stat-label">Units</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value">4</div>
+          <div class="stat-label">Tenants</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value">$4,250</div>
+          <div class="stat-label">Monthly Income</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="main-content">
+    <div class="container">
+      <div class="content-columns">
+        <div class="main-column">
+          <div class="section financial-summary">
+            <div class="section-header">
+              <h2>Financial Summary</h2>
+              <div class="section-actions">
+                <button class="btn-outline">View Reports</button>
+              </div>
+            </div>
+            
+            <div class="financial-chart">
+              <!-- Placeholder for chart -->
+              <div class="chart-placeholder">
+                <div class="chart-bars">
+                  <div class="chart-bar" style="height: 60%;">
+                    <div class="bar-label">Jan</div>
+                  </div>
+                  <div class="chart-bar" style="height: 80%;">
+                    <div class="bar-label">Feb</div>
+                  </div>
+                  <div class="chart-bar" style="height: 70%;">
+                    <div class="bar-label">Mar</div>
+                  </div>
+                  <div class="chart-bar" style="height: 90%;">
+                    <div class="bar-label">Apr</div>
+                  </div>
+                  <div class="chart-bar active" style="height: 85%;">
+                    <div class="bar-label">May</div>
+                  </div>
+                  <div class="chart-bar" style="height: 40%;">
+                    <div class="bar-label">Jun</div>
+                  </div>
+                </div>
+                <div class="chart-legend">
+                  <div class="legend-item">
+                    <span class="legend-color income"></span>
+                    <span class="legend-label">Income</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-color expenses"></span>
+                    <span class="legend-label">Expenses</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="financial-summary-cards">
+              <div class="summary-card income">
+                <div class="summary-title">Income</div>
+                <div class="summary-value">$4,250.00</div>
+                <div class="summary-change positive">+$250 from last month</div>
+              </div>
+              
+              <div class="summary-card expenses">
+                <div class="summary-title">Expenses</div>
+                <div class="summary-value">$1,120.00</div>
+                <div class="summary-change negative">+$180 from last month</div>
+              </div>
+              
+              <div class="summary-card profit">
+                <div class="summary-title">Net Profit</div>
+                <div class="summary-value">$3,130.00</div>
+                <div class="summary-change positive">+$70 from last month</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="section properties-list">
+            <div class="section-header">
+              <h2>Properties</h2>
+              <div class="section-actions">
+                <button class="btn-primary">Add Property</button>
+              </div>
+            </div>
+            
+            <div class="property-cards">
+              <div class="property-card">
+                <div class="property-image" style="background-image: url('https://via.placeholder.com/300x200');"></div>
+                <div class="property-details">
+                  <h3>Oakwood Apartments</h3>
+                  <p class="property-address">123 Main Street, Anytown, USA</p>
+                  <div class="property-stats">
+                    <div class="stat">
+                      <span class="stat-value">3</span>
+                      <span class="stat-label">Units</span>
+                    </div>
+                    <div class="stat">
+                      <span class="stat-value">3</span>
+                      <span class="stat-label">Occupied</span>
+                    </div>
+                    <div class="stat">
+                      <span class="stat-value">$2,550</span>
+                      <span class="stat-label">Income</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="property-actions">
+                  <button class="btn-text">Manage</button>
+                </div>
+              </div>
+              
+              <div class="property-card">
+                <div class="property-image" style="background-image: url('https://via.placeholder.com/300x200');"></div>
+                <div class="property-details">
+                  <h3>Riverside Cottage</h3>
+                  <p class="property-address">456 River Road, Anytown, USA</p>
+                  <div class="property-stats">
+                    <div class="stat">
+                      <span class="stat-value">1</span>
+                      <span class="stat-label">Units</span>
+                    </div>
+                    <div class="stat">
+                      <span class="stat-value">1</span>
+                      <span class="stat-label">Occupied</span>
+                    </div>
+                    <div class="stat">
+                      <span class="stat-value">$1,700</span>
+                      <span class="stat-label">Income</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="property-actions">
+                  <button class="btn-text">Manage</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="view-all-link">
+              <a href="#">View All Properties</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="side-column">
+          <div class="section tasks">
+            <div class="section-header">
+              <h2>Pending Tasks</h2>
+            </div>
+            
+            <div class="task-list">
+              <div class="task-item high">
+                <div class="task-priority"></div>
+                <div class="task-content">
+                  <h3>Renew lease for Unit 301</h3>
+                  <p>Oakwood Apartments, expires in 15 days</p>
+                </div>
+                <div class="task-actions">
+                  <button class="btn-icon">✓</button>
+                </div>
+              </div>
+              
+              <div class="task-item medium">
+                <div class="task-priority"></div>
+                <div class="task-content">
+                  <h3>Schedule property inspection</h3>
+                  <p>Riverside Cottage, due in 7 days</p>
+                </div>
+                <div class="task-actions">
+                  <button class="btn-icon">✓</button>
+                </div>
+              </div>
+              
+              <div class="task-item low">
+                <div class="task-priority"></div>
+                <div class="task-content">
+                  <h3>Review insurance policy</h3>
+                  <p>All properties, due in 30 days</p>
+                </div>
+                <div class="task-actions">
+                  <button class="btn-icon">✓</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="section maintenance-requests">
+            <div class="section-header">
+              <h2>Maintenance Requests</h2>
+            </div>
+            
+            <div class="maintenance-list">
+              <div class="maintenance-item urgent">
+                <div class="request-status"></div>
+                <div class="request-content">
+                  <h3>Leaking pipe under sink</h3>
+                  <p>Unit 202, Oakwood Apartments</p>
+                  <span class="request-date">Reported: May 15, 2023</span>
+                </div>
+                <div class="request-actions">
+                  <button class="btn-text">Respond</button>
+                </div>
+              </div>
+              
+              <div class="maintenance-item normal">
+                <div class="request-status"></div>
+                <div class="request-content">
+                  <h3>Replace light fixtures</h3>
+                  <p>Unit 301, Oakwood Apartments</p>
+                  <span class="request-date">Reported: May 10, 2023</span>
+                </div>
+                <div class="request-actions">
+                  <button class="btn-text">Respond</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="view-all-link">
+              <a href="#">View All Requests</a>
+            </div>
+          </div>
+          
+          <div class="section payment-status">
+            <div class="section-header">
+              <h2>Rent Payment Status</h2>
+            </div>
+            
+            <div class="payment-summary">
+              <div class="payment-chart">
+                <div class="chart-circle">
+                  <svg width="120" height="120" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="54" fill="none" stroke="#f0f0f0" stroke-width="12" />
+                    <circle cx="60" cy="60" r="54" fill="none" stroke="#4caf50" stroke-width="12" stroke-dasharray="339.3" stroke-dashoffset="84.82" />
+                  </svg>
+                  <div class="chart-percentage">75%</div>
+                </div>
+                <div class="chart-label">Collected</div>
+              </div>
+              
+              <div class="payment-details">
+                <div class="payment-row">
+                  <div class="payment-label">Total Rent:</div>
+                  <div class="payment-value">$4,250.00</div>
+                </div>
+                <div class="payment-row">
+                  <div class="payment-label">Collected:</div>
+                  <div class="payment-value">$3,187.50</div>
+                </div>
+                <div class="payment-row">
+                  <div class="payment-label">Outstanding:</div>
+                  <div class="payment-value">$1,062.50</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="late-payments">
+              <h3>Late Payments</h3>
+              <div class="late-payment-item">
+                <div class="tenant-name">Jackson Thomas</div>
+                <div class="payment-amount">$1,062.50</div>
+                <div class="payment-status">5 days late</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

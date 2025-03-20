@@ -1,0 +1,98 @@
+<nav class="navbar" [ngClass]="{'luxury-nav': !isAuthenticated, 'standard-nav': isAuthenticated}">
+  <div class="container">
+    <!-- For non-authenticated users (luxury style) -->
+    <ng-container *ngIf="!isAuthenticated">
+      <a class="navbar-brand" routerLink="/">
+        <span class="brand-text">LUXE</span> <span class="brand-accent">PROPERTIES</span>
+      </a>
+      
+      <button class="mobile-menu-toggle" (click)="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <div class="navbar-menu" [ngClass]="{'active': isMenuOpen}">
+        <div class="navbar-items">
+          <a routerLink="/" class="navbar-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">HOME</a>
+          <a routerLink="/floor-plans" class="navbar-item" routerLinkActive="active">FLOOR PLANS</a>
+          <a routerLink="/amenities" class="navbar-item" routerLinkActive="active">AMENITIES</a>
+          <a routerLink="/gallery" class="navbar-item" routerLinkActive="active">GALLERY</a>
+          <a routerLink="/virtual-tours" class="navbar-item" routerLinkActive="active">VIRTUAL TOURS</a>
+          <a routerLink="/contact-us" class="navbar-item" routerLinkActive="active">CONTACT US</a>
+        </div>
+      </div>
+
+      <div class="navbar-info">
+        <div class="contact-info">
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>(555) 123-4567</span>
+          </div>
+          <div class="contact-info-divider"></div>
+          <div class="contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>123 Luxury Lane</span>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <a href="#" class="action-button">RESOURCES</a>
+          <a href="#" class="action-button accent">RESIDENTS</a>
+          <a routerLink="/auth/login" class="action-button primary">LOGIN</a>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- For authenticated users (standard style) -->
+    <ng-container *ngIf="isAuthenticated">
+      <div class="navbar-brand">
+        <a routerLink="/" class="logo">Tenant Management System</a>
+        <button class="mobile-menu-button" (click)="toggleMenu()">
+          <span class="menu-icon"></span>
+        </button>
+      </div>
+
+      <div class="navbar-menu" [ngClass]="{'is-active': isMenuOpen}">
+        <div class="navbar-start">
+          <a routerLink="/properties" routerLinkActive="active" class="navbar-item">Properties</a>
+          
+          <!-- Tenant links -->
+          <ng-container *ngIf="isTenant">
+            <a routerLink="/leases/my-leases" routerLinkActive="active" class="navbar-item">My Leases</a>
+            <a routerLink="/payments/my-payments" routerLinkActive="active" class="navbar-item">Payments</a>
+            <a routerLink="/maintenance/my-requests" routerLinkActive="active" class="navbar-item">Maintenance</a>
+          </ng-container>
+
+          <!-- Landlord links -->
+          <ng-container *ngIf="isLandlord">
+            <a routerLink="/properties/my-properties" routerLinkActive="active" class="navbar-item">My Properties</a>
+            <a routerLink="/leases" routerLinkActive="active" class="navbar-item">Leases</a>
+            <a routerLink="/payments" routerLinkActive="active" class="navbar-item">Payments</a>
+            <a routerLink="/maintenance" routerLinkActive="active" class="navbar-item">Maintenance</a>
+          </ng-container>
+
+          <!-- Admin links -->
+          <ng-container *ngIf="isAdmin">
+            <a routerLink="/admin/users" routerLinkActive="active" class="navbar-item">Users</a>
+            <a routerLink="/admin/dashboard" routerLinkActive="active" class="navbar-item">Dashboard</a>
+          </ng-container>
+        </div>
+
+        <div class="navbar-end">
+          <div class="user-menu">
+            <button class="user-menu-button">
+              {{ currentUser?.firstName || 'User' }} {{ currentUser?.lastName || '' }}
+              <span class="user-role" *ngIf="currentUser?.role">({{ currentUser?.role }})</span>
+              <span class="arrow-down"></span>
+            </button>
+            <div class="dropdown-menu">
+              <a routerLink="/profile" class="dropdown-item">Profile</a>
+              <a routerLink="/settings" class="dropdown-item">Settings</a>
+              <div class="dropdown-divider"></div>
+              <a (click)="logout()" class="dropdown-item logout-link">Logout</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</nav>
