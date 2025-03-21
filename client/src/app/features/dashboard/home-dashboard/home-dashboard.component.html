@@ -1,122 +1,454 @@
-<!-- Luxury style for non-authenticated users -->
-<div class="home-dashboard" *ngIf="!isLoggedIn">
-  <div class="hero-section">
-    <div class="hero-content">
-      <h1>Luxury Living <span>Made Simple</span></h1>
-      <p>Experience the most comprehensive tenant management system for luxury properties.</p>
+<!-- Public Home Page with Urban Living Theme -->
+<div *ngIf="!isLoggedIn" class="urban-home">
+  <!-- Hero Section with Find Your New Home Search -->
+  <section class="hero-section">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="search-box">
+        <h1>Find Your Place</h1>
+        <p>Discover your perfect urban living space with Anhua Properties</p>
+        
+        <div class="search-container">
+          <input 
+            type="text" 
+            placeholder="Search by location, property name, or features..." 
+            [(ngModel)]="searchTerm"
+            class="search-input"
+          >
+          <button class="search-btn" (click)="searchProperties()">
+            <i class="fas fa-search"></i> Search
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Properties / Neighborhoods Section -->
+  <section class="properties-section">
+    <div class="container">
+      <h2>Our Properties</h2>
+      <p class="section-subtitle">Explore our carefully selected urban living spaces</p>
       
+      <div class="neighborhood-grid">
+        <div class="neighborhood-card">
+          <div class="neighborhood-img">
+            <img [src]="getPropertyImageUrl(properties[0])" alt="Millpond">
+            <div class="overlay"></div>
+          </div>
+          <div class="neighborhood-info">
+            <h3>Millpond</h3>
+            <p>11660 Millpond Ave, Burnsville, MN</p>
+            <a [routerLink]="['/properties', properties[0].id]" class="btn btn-outline">Explore</a>
+          </div>
+        </div>
+        
+        <div class="neighborhood-card">
+          <div class="neighborhood-img">
+            <img [src]="getPropertyImageUrl(properties[1])" alt="Meadow Grass Lane">
+            <div class="overlay"></div>
+          </div>
+          <div class="neighborhood-info">
+            <h3>Meadow Grass Lane</h3>
+            <p>Meadow Grass Lane S, Cottage Grove</p>
+            <a [routerLink]="['/properties', properties[1].id]" class="btn btn-outline">Explore</a>
+          </div>
+        </div>
+        
+        <div class="neighborhood-card">
+          <div class="neighborhood-img">
+            <img [src]="getPropertyImageUrl(properties[2])" alt="West Street">
+            <div class="overlay"></div>
+          </div>
+          <div class="neighborhood-info">
+            <h3>West Street</h3>
+            <p>137th West Street, Savage</p>
+            <a [routerLink]="['/properties', properties[2].id]" class="btn btn-outline">Explore</a>
+          </div>
+        </div>
+        
+        <div class="neighborhood-card">
+          <div class="neighborhood-img">
+            <img [src]="getPropertyImageUrl(properties[3])" alt="Juniper Court">
+            <div class="overlay"></div>
+          </div>
+          <div class="neighborhood-info">
+            <h3>Juniper Court</h3>
+            <p>Juniper Court, Shakopee</p>
+            <a [routerLink]="['/properties', properties[3].id]" class="btn btn-outline">Explore</a>
+          </div>
+        </div>
+        
+        <div class="neighborhood-card">
+          <div class="neighborhood-img">
+            <img [src]="getPropertyImageUrl(properties[4])" alt="92nd Street">
+            <div class="overlay"></div>
+          </div>
+          <div class="neighborhood-info">
+            <h3>92nd Street</h3>
+            <p>92nd Street, Cottage Grove</p>
+            <a [routerLink]="['/properties', properties[4].id]" class="btn btn-outline">Explore</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="view-all-link">
+        <a routerLink="/properties" class="btn btn-primary">View All Properties</a>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Millpond Property Details Section -->
+  <section class="property-detail-section">
+    <div class="container">
+      <h2>Featured Property: Millpond</h2>
+      <div class="property-detail-container">
+        <div class="property-images">
+          <div class="main-image">
+            <img [src]="getPropertyImageUrl(properties[0])" alt="Millpond Exterior">
+          </div>
+          <div class="image-thumbnails">
+            <img src="assets/images/millpond-interior1.jpg" alt="Millpond Living Room">
+            <img src="assets/images/millpond-interior2.jpg" alt="Millpond Kitchen">
+            <img src="assets/images/millpond-interior3.jpg" alt="Millpond Bedroom">
+            <img src="assets/images/millpond-exterior2.jpg" alt="Millpond Pool">
+          </div>
+        </div>
+        
+        <div class="property-content">
+          <div class="property-overview">
+            <h3>Property Overview</h3>
+            <p>Welcome to Millpond - a beautiful urban living community nestled in the heart of Burnsville. With spacious floor plans, modern amenities, and a prime location, Millpond offers the perfect balance of comfort and convenience.</p>
+            <div class="property-specs detail">
+              <div class="spec-item">
+                <span class="spec-label">Price Range</span>
+                <span class="spec-value">$1,500 - $2,200/month</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Bedrooms</span>
+                <span class="spec-value">2-3 Beds</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Bathrooms</span>
+                <span class="spec-value">1-2 Baths</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Square Footage</span>
+                <span class="spec-value">1,200-1,800 sqft</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="property-location">
+            <h3>Location</h3>
+            <div class="map-container">
+              <img src="assets/images/millpond-map.jpg" alt="Millpond Location Map">
+            </div>
+            <p>Located at 11660 Millpond Ave, Burnsville, MN 55337, with easy access to shopping, dining, and major highways.</p>
+          </div>
+          
+          <div class="property-amenities">
+            <h3>Community Amenities</h3>
+            <ul class="amenities-list">
+              <li *ngFor="let amenity of properties[0].amenities">{{ amenity }}</li>
+            </ul>
+          </div>
+          
+          <div class="property-actions detail">
+            <button class="btn btn-primary">Schedule a Tour</button>
+            <button class="btn btn-outline">Request Information</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="container">
+      <h2>Why Choose Anhua Properties</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-building"></i>
+          </div>
+          <h3>Modern Urban Living</h3>
+          <p>Contemporary designs that blend comfort with urban aesthetics</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <h3>Prime Locations</h3>
+          <p>Properties in sought-after neighborhoods with easy access to amenities</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-tools"></i>
+          </div>
+          <h3>Responsive Maintenance</h3>
+          <p>24/7 maintenance support for all your property needs</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-leaf"></i>
+          </div>
+          <h3>Sustainable Living</h3>
+          <p>Energy-efficient features and eco-friendly community initiatives</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Testimonials Section -->
+  <section class="testimonials-section">
+    <div class="container">
+      <h2>What Our Residents Say</h2>
+      <div class="testimonials-slider">
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <p>"Living at Millpond has been an amazing experience. The property is well-maintained, and the management team is always responsive and helpful."</p>
+          </div>
+          <div class="testimonial-author">
+            <div class="author-img">
+              <img src="assets/images/testimonial1.jpg" alt="Sarah Johnson">
+            </div>
+            <div class="author-info">
+              <h4>Sarah Johnson</h4>
+              <p>Millpond Resident</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <p>"I've lived at Meadow Grass Lane for over two years now, and I couldn't be happier with my choice. The location is perfect, and the amenities are top-notch."</p>
+          </div>
+          <div class="testimonial-author">
+            <div class="author-img">
+              <img src="assets/images/testimonial2.jpg" alt="Michael Chen">
+            </div>
+            <div class="author-info">
+              <h4>Michael Chen</h4>
+              <p>Meadow Grass Lane Resident</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <p>"The West Street property is exactly what I was looking for - modern, spacious, and located in the heart of the city. I love the exposed brick and high ceilings!"</p>
+          </div>
+          <div class="testimonial-author">
+            <div class="author-img">
+              <img src="assets/images/testimonial3.jpg" alt="Emily Rodriguez">
+            </div>
+            <div class="author-info">
+              <h4>Emily Rodriguez</h4>
+              <p>West Street Resident</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Call to Action Section -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Ready to Find Your New Home?</h2>
+      <p>Contact us today to schedule a tour or learn more about our properties</p>
       <div class="cta-buttons">
-        <a routerLink="/auth/register" class="btn btn-primary">Get Started</a>
-        <a routerLink="/auth/login" class="btn btn-secondary">Login</a>
+        <button class="btn btn-primary">Schedule a Tour</button>
+        <button class="btn btn-outline">Contact Us</button>
       </div>
     </div>
-    <div class="hero-image">
-      <img src="assets/images/luxury-building.jpg" alt="Luxury Apartment Building">
-    </div>
-  </div>
-
-  <div class="features-section">
-    <h2>Premium <span>Features</span></h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">
-          <i class="fas fa-home"></i>
-        </div>
-        <h3>Exclusive Properties</h3>
-        <p>Browse through our collection of luxury properties in prime locations.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon">
-          <i class="fas fa-file-contract"></i>
-        </div>
-        <h3>Seamless Leasing</h3>
-        <p>Complete the entire leasing process online, from application to digital signatures.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon">
-          <i class="fas fa-credit-card"></i>
-        </div>
-        <h3>Secure Payments</h3>
-        <p>Manage rent payments, deposits, and fees through our secure payment portal.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon">
-          <i class="fas fa-concierge-bell"></i>
-        </div>
-        <h3>Premium Services</h3>
-        <p>Request maintenance, concierge services, and amenity bookings with ease.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="testimonials-section">
-    <h2>What Our <span>Residents Say</span></h2>
-    <div class="testimonials-grid">
-      <div class="testimonial-card">
-        <div class="testimonial-content">
-          <p>"Managing my luxury apartment has never been easier. The platform is intuitive and the service is impeccable."</p>
-        </div>
-        <div class="testimonial-author">
-          <p>- Sarah J., Resident</p>
-        </div>
-      </div>
-      
-      <div class="testimonial-card">
-        <div class="testimonial-content">
-          <p>"From virtual tours to move-in, everything was handled digitally and efficiently. Truly a modern approach to property management."</p>
-        </div>
-        <div class="testimonial-author">
-          <p>- Michael T., Property Owner</p>
-        </div>
-      </div>
-    </div>
-  </div>
+  </section>
 </div>
 
-<!-- Standard dashboard for authenticated users -->
-<div class="dashboard-container" *ngIf="isLoggedIn">
+<!-- Standard Dashboard for Authenticated Users -->
+<div *ngIf="isLoggedIn" class="dashboard-container">
   <div class="dashboard-header">
-    <h1>Welcome back, {{currentUser?.firstName}}!</h1>
-    <p>Here's an overview of your property management activities.</p>
+    <h1>Welcome, {{ currentUser?.firstName || 'User' }}</h1>
+    <p>Here's an overview of your properties and recent activities</p>
   </div>
-
+  
   <div class="dashboard-grid">
+    <!-- Property Summary Card -->
     <div class="dashboard-card">
       <div class="card-header">
-        <h3>Properties</h3>
-        <a routerLink="/properties" class="view-all">View All</a>
+        <h3>Property Summary</h3>
       </div>
       <div class="card-body">
-        <p *ngIf="!properties || properties.length === 0">No properties found.</p>
-        <ul *ngIf="properties && properties.length > 0" class="property-list">
-          <li *ngFor="let property of properties.slice(0, 3)">
-            <span class="property-name">{{property.name}}</span>
-            <span class="property-status" [ngClass]="property.status">{{property.status}}</span>
-          </li>
-        </ul>
+        <div class="stats-container">
+          <div class="stat-item">
+            <span class="stat-value">5</span>
+            <span class="stat-label">Total Properties</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">3</span>
+            <span class="stat-label">Occupied</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">2</span>
+            <span class="stat-label">Vacant</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">1</span>
+            <span class="stat-label">Maintenance</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a routerLink="/properties" class="btn btn-outline">View All Properties</a>
       </div>
     </div>
-
+    
+    <!-- Financial Summary Card -->
     <div class="dashboard-card">
       <div class="card-header">
-        <h3>Recent Activity</h3>
+        <h3>Financial Summary</h3>
       </div>
       <div class="card-body">
-        <p *ngIf="!activities || activities.length === 0">No recent activities.</p>
-        <ul *ngIf="activities && activities.length > 0" class="activity-list">
-          <li *ngFor="let activity of activities.slice(0, 5)" class="activity-item">
-            <div class="activity-icon" [ngClass]="activity.type">
-              <i [class]="'fas fa-' + getActivityIcon(activity.type)"></i>
+        <div class="financial-summary">
+          <div class="financial-item">
+            <span class="financial-label">Monthly Income</span>
+            <span class="financial-value">$8,500</span>
+          </div>
+          <div class="financial-item">
+            <span class="financial-label">Outstanding Balance</span>
+            <span class="financial-value">$1,200</span>
+          </div>
+          <div class="financial-item">
+            <span class="financial-label">Next Payment Due</span>
+            <span class="financial-value">Jun 1, 2023</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a routerLink="/finances" class="btn btn-outline">View Financial Details</a>
+      </div>
+    </div>
+    
+    <!-- Tenant Summary Card -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h3>Tenant Summary</h3>
+      </div>
+      <div class="card-body">
+        <div class="stats-container">
+          <div class="stat-item">
+            <span class="stat-value">12</span>
+            <span class="stat-label">Total Tenants</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">2</span>
+            <span class="stat-label">New Tenants</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">1</span>
+            <span class="stat-label">Lease Ending</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a routerLink="/tenants" class="btn btn-outline">Manage Tenants</a>
+      </div>
+    </div>
+    
+    <!-- Recent Activities Card -->
+    <div class="dashboard-card activities-card">
+      <div class="card-header">
+        <h3>Recent Activities</h3>
+      </div>
+      <div class="card-body">
+        <div class="activities-list">
+          <div *ngFor="let activity of activities" class="activity-item">
+            <div class="activity-icon">
+              <i class="fas fa-{{ getActivityIcon(activity.type) }}"></i>
             </div>
             <div class="activity-details">
-              <p class="activity-text">{{activity.description}}</p>
-              <p class="activity-time">{{activity.time | date:'short'}}</p>
+              <p class="activity-description">{{ activity.description }}</p>
+              <span class="activity-time">{{ activity.time | date:'short' }}</span>
             </div>
-          </li>
-        </ul>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a routerLink="/activities" class="btn btn-outline">View All Activities</a>
+      </div>
+    </div>
+    
+    <!-- Quick Actions Card -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h3>Quick Actions</h3>
+      </div>
+      <div class="card-body">
+        <div class="quick-actions">
+          <a routerLink="/maintenance/create" class="quick-action-btn">
+            <i class="fas fa-tools"></i>
+            <span>Create Maintenance Request</span>
+          </a>
+          <a routerLink="/tenants/add" class="quick-action-btn">
+            <i class="fas fa-user-plus"></i>
+            <span>Add New Tenant</span>
+          </a>
+          <a routerLink="/properties/add" class="quick-action-btn">
+            <i class="fas fa-building"></i>
+            <span>Add New Property</span>
+          </a>
+          <a routerLink="/payments/collect" class="quick-action-btn">
+            <i class="fas fa-dollar-sign"></i>
+            <span>Collect Payment</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Upcoming Events Card -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h3>Upcoming Events</h3>
+      </div>
+      <div class="card-body">
+        <div class="events-list">
+          <div class="event-item">
+            <div class="event-date">
+              <span class="event-month">Jun</span>
+              <span class="event-day">1</span>
+            </div>
+            <div class="event-details">
+              <h4 class="event-title">Rent Due</h4>
+              <p class="event-description">All properties</p>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">
+              <span class="event-month">Jun</span>
+              <span class="event-day">15</span>
+            </div>
+            <div class="event-details">
+              <h4 class="event-title">Property Inspection</h4>
+              <p class="event-description">123 Main St, Apt 101</p>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">
+              <span class="event-month">Jun</span>
+              <span class="event-day">30</span>
+            </div>
+            <div class="event-details">
+              <h4 class="event-title">Lease Renewal</h4>
+              <p class="event-description">456 Oak Ave, Unit 202</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a routerLink="/calendar" class="btn btn-outline">View Calendar</a>
       </div>
     </div>
   </div>

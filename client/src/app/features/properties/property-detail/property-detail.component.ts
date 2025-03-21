@@ -39,22 +39,40 @@ interface MaintenanceRequest {
 
 interface Property {
   _id: string;
+  id?: string;
   name: string;
-  address: string;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+  };
   description: string;
   type?: string;
   yearBuilt?: number;
   squareFootage?: number;
+  sqft?: number;
+  price?: number;
+  bedrooms?: number;
+  bathrooms?: number;
   units: number;
   occupiedUnits: number;
   income: number;
   expenses: number;
   pendingPayments: number;
-  status: 'available' | 'occupied' | 'maintenance';
+  status: 'available' | 'occupied' | 'maintenance' | 'active' | 'inactive';
   images: string[];
+  features?: string[];
   unitsList?: PropertyUnit[];
   tenants?: Tenant[];
   maintenanceRequests?: MaintenanceRequest[];
+  agent?: {
+    name: string;
+    email: string;
+    phone: string;
+    image: string;
+  };
 }
 
 @Component({
@@ -70,6 +88,10 @@ export class PropertyDetailComponent implements OnInit {
   error = '';
   isLandlord = false;
   selectedImage = '';
+  selectedImageIndex = 0;
+  isAuthenticated = false;
+  propertyId = '';
+  sampleProperties: Property[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -81,6 +103,12 @@ export class PropertyDetailComponent implements OnInit {
   ngOnInit(): void {
     this.isLandlord = this.authService.isLandlord();
     this.loadProperty();
+    
+    // Check authentication status
+    this.isAuthenticated = this.authService.isAuthenticated();
+    
+    // Setup sample properties for the "Similar Properties" section
+    this.setupSampleProperties();
   }
 
   loadProperty(): void {
@@ -100,6 +128,7 @@ export class PropertyDetailComponent implements OnInit {
           // For now, we're using mock data
           this.property = this.getMockProperty();
           this.selectedImage = this.property.images[0] || '';
+          this.selectedImageIndex = 0;
           this.loading = false;
         },
         error: (err) => {
@@ -110,8 +139,11 @@ export class PropertyDetailComponent implements OnInit {
       });
   }
 
-  selectImage(image: string): void {
-    this.selectedImage = image;
+  selectImage(index: number): void {
+    if (this.property && this.property.images && this.property.images[index]) {
+      this.selectedImage = this.property.images[index];
+      this.selectedImageIndex = index;
+    }
   }
 
   editProperty(): void {
@@ -192,16 +224,129 @@ export class PropertyDetailComponent implements OnInit {
     }
   }
 
-  // Mock data for development
+  getMainImage(): string {
+    return this.property?.images[0] || '';
+  }
+
+  scheduleViewing(): void {
+    if (!this.isAuthenticated) {
+      this.router.navigate(['/auth/login'], { 
+        queryParams: { returnUrl: this.router.url, action: 'schedule' }
+      });
+      return;
+    }
+    
+    alert('Scheduling feature will be implemented in a future update.');
+    // In a real application, this would open a form or navigate to a booking page
+  }
+
+  contactAgent(): void {
+    if (!this.isAuthenticated) {
+      this.router.navigate(['/auth/login'], { 
+        queryParams: { returnUrl: this.router.url, action: 'contact' }
+      });
+      return;
+    }
+    
+    alert('Contact feature will be implemented in a future update.');
+    // In a real application, this would open a contact form or chat interface
+  }
+
+  setupSampleProperties(): void {
+    this.sampleProperties = [
+      {
+        _id: '2',
+        id: '2',
+        name: 'Riverside Apartments',
+        address: {
+          street: '789 River Road',
+          city: 'Minneapolis',
+          state: 'MN',
+          zipCode: '55401',
+          country: 'USA'
+        },
+        description: 'Luxury riverside apartments with stunning views.',
+        type: 'apartment',
+        yearBuilt: 2018,
+        squareFootage: 10000,
+        sqft: 1500,
+        price: 2200,
+        bedrooms: 3,
+        bathrooms: 2,
+        units: 18,
+        occupiedUnits: 15,
+        income: 30000,
+        expenses: 12000,
+        pendingPayments: 1500,
+        status: 'available',
+        images: ['https://via.placeholder.com/600x400'],
+        features: [
+          'Riverside Views',
+          'Modern Kitchen',
+          'In-unit Laundry',
+          'Balcony',
+          'Covered Parking'
+        ]
+      },
+      {
+        _id: '3',
+        id: '3',
+        name: 'Urban Lofts',
+        address: {
+          street: '456 Downtown Ave',
+          city: 'St. Paul',
+          state: 'MN',
+          zipCode: '55102',
+          country: 'USA'
+        },
+        description: 'Contemporary lofts in the heart of downtown.',
+        type: 'loft',
+        yearBuilt: 2015,
+        squareFootage: 8000,
+        sqft: 950,
+        price: 1950,
+        bedrooms: 1,
+        bathrooms: 1,
+        units: 12,
+        occupiedUnits: 10,
+        income: 20000,
+        expenses: 8000,
+        pendingPayments: 1000,
+        status: 'available',
+        images: ['https://via.placeholder.com/600x400'],
+        features: [
+          'High Ceilings',
+          'Exposed Brick',
+          'Hardwood Floors',
+          'Stainless Steel Appliances',
+          'Rooftop Access'
+        ]
+      }
+    ];
+  }
+
+  // Update the mock property
   private getMockProperty(): Property {
+    this.propertyId = '1';
     return {
       _id: '1',
+      id: '1',
       name: 'Oakwood Apartments',
-      address: '123 Main Street, Anytown, USA',
+      address: {
+        street: '123 Main Street',
+        city: 'Anytown',
+        state: 'CA',
+        zipCode: '90210',
+        country: 'USA'
+      },
       description: 'A beautiful apartment complex with modern amenities including a pool, gym, and community center. Located in a quiet neighborhood with easy access to public transportation, shopping, and dining.',
       type: 'Apartment Complex',
       yearBuilt: 2015,
       squareFootage: 12000,
+      sqft: 1200,
+      price: 1800,
+      bedrooms: 2,
+      bathrooms: 2,
       units: 5,
       occupiedUnits: 3,
       income: 5500,
@@ -209,6 +354,21 @@ export class PropertyDetailComponent implements OnInit {
       pendingPayments: 500,
       status: 'available',
       images: ['https://via.placeholder.com/600x400', 'https://via.placeholder.com/600x400', 'https://via.placeholder.com/600x400'],
+      features: [
+        'Swimming Pool',
+        'Fitness Center',
+        'Dog Park',
+        'Resident Lounge',
+        'Grilling Stations',
+        'Secure Access',
+        'In-unit Washer/Dryer'
+      ],
+      agent: {
+        name: 'John Smith',
+        email: 'john.smith@example.com',
+        phone: '(555) 123-4567',
+        image: 'https://via.placeholder.com/100x100'
+      },
       unitsList: [
         {
           id: 'unit1',

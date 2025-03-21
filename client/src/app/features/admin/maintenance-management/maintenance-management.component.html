@@ -1,0 +1,121 @@
+<div class="maintenance-management">
+  <div class="container">
+    <div class="page-header">
+      <h1>Maintenance Management</h1>
+      <button class="add-maintenance-btn" (click)="addMaintenanceRequest()">
+        <i class="fas fa-plus"></i> Add Maintenance Request
+      </button>
+    </div>
+    
+    <!-- Search and Filter Section -->
+    <div class="search-filter-section">
+      <div class="search-box">
+        <input 
+          type="text" 
+          placeholder="Search by title, description, tenant or unit..." 
+          [(ngModel)]="searchTerm"
+        >
+        <button (click)="filterRequests()">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+      
+      <div class="filter-options">
+        <div class="filter-item">
+          <label>Status:</label>
+          <select [(ngModel)]="selectedStatus" (change)="filterRequests()">
+            <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+          </select>
+        </div>
+        
+        <div class="filter-item">
+          <label>Property:</label>
+          <select [(ngModel)]="selectedProperty" (change)="filterRequests()">
+            <option value="All">All Properties</option>
+            <option *ngFor="let property of properties" [value]="property.name">{{ property.name }}</option>
+          </select>
+        </div>
+        
+        <button class="reset-filters" (click)="resetFilters()">
+          <i class="fas fa-undo"></i> Reset
+        </button>
+      </div>
+    </div>
+    
+    <!-- Maintenance Table -->
+    <div class="maintenance-table-container">
+      <table class="maintenance-table" *ngIf="!isLoading && maintenanceRequests.length > 0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Property</th>
+            <th>Unit</th>
+            <th>Tenant</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Submitted</th>
+            <th>Assigned To</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let request of maintenanceRequests">
+            <td>{{ request.id }}</td>
+            <td class="request-title">{{ request.title }}</td>
+            <td>{{ request.propertyName }}</td>
+            <td>{{ request.unitNumber }}</td>
+            <td>{{ request.tenantName }}</td>
+            <td>
+              <span class="priority-badge" [ngClass]="getPriorityClass(request.priority)">
+                {{ request.priority }}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(request.status)">
+                {{ request.status }}
+              </span>
+            </td>
+            <td>{{ request.dateSubmitted | date:'shortDate' }}</td>
+            <td>{{ request.assignedTo }}</td>
+            <td class="actions-cell">
+              <button class="action-btn view-btn" (click)="viewMaintenanceRequest(request.id)" title="View Details">
+                <i class="fas fa-eye"></i>
+              </button>
+              
+              <div class="dropdown">
+                <button class="action-btn status-btn" title="Update Status">
+                  <i class="fas fa-tasks"></i>
+                </button>
+                <div class="dropdown-content">
+                  <a (click)="updateStatus(request, 'Open')">Open</a>
+                  <a (click)="updateStatus(request, 'In Progress')">In Progress</a>
+                  <a (click)="updateStatus(request, 'Completed')">Completed</a>
+                  <a (click)="updateStatus(request, 'Cancelled')">Cancelled</a>
+                </div>
+              </div>
+              
+              <button class="action-btn assign-btn" (click)="assignMaintenance(request)" title="Assign Maintenance">
+                <i class="fas fa-user-plus"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Loading State -->
+      <div class="loading-state" *ngIf="isLoading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading maintenance requests...</p>
+      </div>
+      
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!isLoading && maintenanceRequests.length === 0">
+        <i class="fas fa-tools"></i>
+        <h3>No maintenance requests found</h3>
+        <p>No maintenance requests match your search criteria or no requests have been submitted yet.</p>
+        <button class="primary-btn" (click)="addMaintenanceRequest()">Add Maintenance Request</button>
+      </div>
+    </div>
+  </div>
+</div> 

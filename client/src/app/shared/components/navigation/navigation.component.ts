@@ -1,72 +1,75 @@
-import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-import { User } from '../../../core/models/user.model';
 import { Subscription } from 'rxjs';
+import { User } from '../../../core/models/user.model';
+import { CommonModule, NgClass, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, NgClass, NgIf],
   templateUrl: './navigation.component.html',
-  styleUrl: './navigation.component.scss'
+  styleUrls: ['./navigation.component.scss']
 })
 export class NavigationComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
-  isMenuOpen = false;
-  isBrowser: boolean;
+  isLoggedIn = false;
+  isScrolled = false;
+  isMobileMenuOpen = false;
+  isUserMenuOpen = false;
+  isLandlord = false;
+  isAdmin = false;
   private authSubscription: Subscription | null = null;
 
   constructor(
     private authService: AuthService,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {
-    this.isBrowser = isPlatformBrowser(platformId);
+    private router: Router
+  ) {}
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    console.log('Scroll Y:', window.scrollY);
+    this.isScrolled = window.scrollY > 20;
   }
 
   ngOnInit(): void {
-    if (this.isBrowser) {
-      console.log('Navigation component initialized');
-      // Subscribe to authentication changes
-      this.authSubscription = this.authService.currentUser$.subscribe(user => {
-        console.log('Auth state changed, current user:', user);
-        this.currentUser = user;
-      });
-    }
+    this.authSubscription = this.authService.currentUser$.subscribe(user => {
+      this.isLoggedIn = !!user;
+      this.currentUser = user;
+      if (user) {
+        this.isLandlord = user.role === 'landlord';
+        this.isAdmin = user.role === 'admin';
+      }
+    });
   }
 
   ngOnDestroy(): void {
-    // Clean up subscription when component is destroyed
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
   }
 
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    if (this.isMobileMenuOpen) {
+      this.isUserMenuOpen = false;
+    }
+  }
+
+  toggleUserMenu(): void {
+    this.isUserMenuOpen = !this.isUserMenuOpen;
+  }
+
   logout(): void {
-    console.log('Logout clicked');
     this.authService.logout();
-  }
-
-  toggleMenu(): void {
-    this.isMenuOpen = !this.isMenuOpen;
-  }
-
-  get isLandlord(): boolean {
-    const result = this.authService.isLandlord();
-    console.log('Is landlord check:', result);
-    return result;
+    this.router.navigate(['/']);
+    this.isUserMenuOpen = false;
   }
 
   get isTenant(): boolean {
     const result = this.authService.isTenant();
     console.log('Is tenant check:', result);
-    return result;
-  }
-
-  get isAdmin(): boolean {
-    const result = this.authService.isAdmin();
-    console.log('Is admin check:', result); 
     return result;
   }
 

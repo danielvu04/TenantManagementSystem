@@ -1,1 +1,272 @@
-<p>property-form works!</p>
+<div class="property-form-container">
+  <div class="form-header">
+    <h1>{{ editMode ? 'Edit Property' : 'Add New Property' }}</h1>
+    <p class="subtitle">{{ editMode ? 'Update the details for this property' : 'Fill in the details to add a new property' }}</p>
+  </div>
+
+  <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()" class="property-form">
+    <div class="form-section">
+      <h2 class="section-title">Basic Information</h2>
+      
+      <div class="form-group">
+        <label for="name">Property Name</label>
+        <input 
+          type="text" 
+          id="name" 
+          formControlName="name" 
+          [class.invalid]="isFieldInvalid('name')"
+        >
+        <div class="error-message" *ngIf="isFieldInvalid('name')">
+          {{ getFieldError('name') }}
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input 
+          type="text" 
+          id="address" 
+          formControlName="address" 
+          [class.invalid]="isFieldInvalid('address')"
+        >
+        <div class="error-message" *ngIf="isFieldInvalid('address')">
+          {{ getFieldError('address') }}
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="price">Monthly Rent ($)</label>
+          <input 
+            type="number" 
+            id="price" 
+            formControlName="price" 
+            [class.invalid]="isFieldInvalid('price')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('price')">
+            {{ getFieldError('price') }}
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="type">Property Type</label>
+          <select 
+            id="type" 
+            formControlName="type" 
+            [class.invalid]="isFieldInvalid('type')"
+          >
+            <option value="">Select a type</option>
+            <option *ngFor="let type of propertyTypes" [value]="type">{{ type }}</option>
+          </select>
+          <div class="error-message" *ngIf="isFieldInvalid('type')">
+            {{ getFieldError('type') }}
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select 
+            id="status" 
+            formControlName="status" 
+            [class.invalid]="isFieldInvalid('status')"
+          >
+            <option *ngFor="let status of propertyStatus" [value]="status">{{ status }}</option>
+          </select>
+          <div class="error-message" *ngIf="isFieldInvalid('status')">
+            {{ getFieldError('status') }}
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="bedrooms">Bedrooms</label>
+          <input 
+            type="number" 
+            id="bedrooms" 
+            formControlName="bedrooms" 
+            [class.invalid]="isFieldInvalid('bedrooms')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('bedrooms')">
+            {{ getFieldError('bedrooms') }}
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="bathrooms">Bathrooms</label>
+          <input 
+            type="number" 
+            id="bathrooms" 
+            formControlName="bathrooms" 
+            [class.invalid]="isFieldInvalid('bathrooms')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('bathrooms')">
+            {{ getFieldError('bathrooms') }}
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="sqft">Square Feet</label>
+          <input 
+            type="number" 
+            id="sqft" 
+            formControlName="sqft" 
+            [class.invalid]="isFieldInvalid('sqft')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('sqft')">
+            {{ getFieldError('sqft') }}
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea 
+          id="description" 
+          formControlName="description" 
+          rows="5" 
+          [class.invalid]="isFieldInvalid('description')"
+        ></textarea>
+        <div class="error-message" *ngIf="isFieldInvalid('description')">
+          {{ getFieldError('description') }}
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <h2 class="section-title">Property Features</h2>
+      
+      <div class="features-checkboxes">
+        <div class="feature-checkbox" *ngFor="let feature of commonFeatures">
+          <label>
+            <input 
+              type="checkbox" 
+              [checked]="isFeatureSelected(feature)" 
+              (change)="onFeatureChange(feature, $event.target.checked)"
+            >
+            {{ feature }}
+          </label>
+        </div>
+      </div>
+      
+      <h3 class="subsection-title">Custom Features</h3>
+      <div class="custom-features" formArrayName="customFeatures">
+        <div class="custom-feature-row" *ngFor="let control of customFeaturesArray.controls; let i = index">
+          <input 
+            type="text" 
+            [formControlName]="i" 
+            placeholder="Add a custom feature"
+          >
+          <button type="button" class="remove-button" (click)="removeCustomFeature(i)" *ngIf="i > 0 || customFeaturesArray.length > 1">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <button type="button" class="add-feature-button" (click)="addCustomFeature()">
+          <i class="fas fa-plus"></i> Add Custom Feature
+        </button>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <h2 class="section-title">Property Images</h2>
+      
+      <div class="image-upload-container">
+        <div class="image-upload">
+          <label for="property-images" class="upload-label">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span>Click to Upload Images</span>
+            <small>Supported formats: JPG, PNG - Max size: 5MB</small>
+          </label>
+          <input 
+            type="file" 
+            id="property-images" 
+            multiple 
+            accept="image/*" 
+            (change)="onImageUpload($event)" 
+            class="file-input"
+          >
+        </div>
+        
+        <div class="image-previews" *ngIf="imagePreviewUrls.length > 0">
+          <div class="image-preview-item" *ngFor="let imageUrl of imagePreviewUrls; let i = index">
+            <img [src]="imageUrl" alt="Property image preview">
+            <button type="button" class="remove-button" (click)="removeImage(i)">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <h2 class="section-title">Agent Information</h2>
+      
+      <div formGroupName="agent" class="agent-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="agent-name">Agent Name</label>
+            <input 
+              type="text" 
+              id="agent-name" 
+              formControlName="name" 
+              [class.invalid]="isFieldInvalid('agent.name')"
+            >
+            <div class="error-message" *ngIf="isFieldInvalid('agent.name')">
+              {{ getFieldError('agent.name') }}
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="agent-phone">Phone Number</label>
+            <input 
+              type="text" 
+              id="agent-phone" 
+              formControlName="phone" 
+              [class.invalid]="isFieldInvalid('agent.phone')"
+            >
+            <div class="error-message" *ngIf="isFieldInvalid('agent.phone')">
+              {{ getFieldError('agent.phone') }}
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="agent-email">Email</label>
+          <input 
+            type="email" 
+            id="agent-email" 
+            formControlName="email" 
+            [class.invalid]="isFieldInvalid('agent.email')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('agent.email')">
+            {{ getFieldError('agent.email') }}
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="agent-image">Agent Image URL</label>
+          <input 
+            type="text" 
+            id="agent-image" 
+            formControlName="image"
+          >
+          <small class="help-text">Provide a URL to the agent's profile image</small>
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-actions">
+      <button type="button" class="cancel-button" [routerLink]="['/properties']">Cancel</button>
+      <button 
+        type="submit" 
+        class="submit-button" 
+        [disabled]="propertyForm.invalid || isSubmitting"
+      >
+        <span *ngIf="!isSubmitting">{{ editMode ? 'Update Property' : 'Add Property' }}</span>
+        <span *ngIf="isSubmitting">
+          <i class="fas fa-spinner fa-spin"></i> {{ editMode ? 'Updating...' : 'Adding...' }}
+        </span>
+      </button>
+    </div>
+  </form>
+</div>

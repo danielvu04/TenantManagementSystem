@@ -1,0 +1,113 @@
+<div class="tenant-management">
+  <div class="container">
+    <div class="page-header">
+      <h1>Tenant Management</h1>
+      <button class="add-tenant-btn" (click)="addTenant()">
+        <i class="fas fa-plus"></i> Add Tenant
+      </button>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="search-filter-section">
+      <div class="search-container">
+        <input 
+          type="text" 
+          placeholder="Search by name, email, phone, or unit..." 
+          [(ngModel)]="searchTerm"
+          class="search-input"
+        >
+        <button class="search-btn" (click)="filterTenants()">
+          <i class="fas fa-search"></i> Search
+        </button>
+      </div>
+      
+      <div class="filter-options">
+        <div class="filter-group">
+          <label>Status:</label>
+          <select [(ngModel)]="selectedStatus" (change)="filterTenants()" class="status-filter">
+            <option *ngFor="let option of statusOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>Property:</label>
+          <select [(ngModel)]="propertyFilter" (change)="filterTenants()" class="property-filter">
+            <option value="All">All Properties</option>
+            <option *ngFor="let property of properties" [value]="property.id">{{ property.name }}</option>
+          </select>
+        </div>
+        
+        <button class="reset-btn" (click)="resetFilters()">
+          <i class="fas fa-sync-alt"></i> Reset Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Tenants Table -->
+    <div class="tenants-table-container">
+      <table class="tenants-table" *ngIf="!isLoading && tenants.length > 0">
+        <thead>
+          <tr>
+            <th>Tenant</th>
+            <th>Contact</th>
+            <th>Property</th>
+            <th>Unit</th>
+            <th>Lease</th>
+            <th>Rent</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tenant of tenants">
+            <td class="tenant-name">{{ getFullName(tenant) }}</td>
+            <td>
+              <div class="contact-info">
+                <div>{{ tenant.email }}</div>
+                <div>{{ tenant.phone }}</div>
+              </div>
+            </td>
+            <td>{{ tenant.propertyName }}</td>
+            <td>{{ tenant.unitNumber }}</td>
+            <td>
+              <div class="lease-info">
+                <div>{{ tenant.leaseStart | date:'MM/dd/yyyy' }} - {{ tenant.leaseEnd ? (tenant.leaseEnd | date:'MM/dd/yyyy') : 'N/A' }}</div>
+                <div class="lease-remaining" [ngClass]="{'lease-expired': !hasActiveLeases(tenant)}">
+                  {{ getLeaseTimeRemaining(tenant) }}
+                </div>
+              </div>
+            </td>
+            <td>${{ tenant.rentAmount | number }}/mo</td>
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(tenant.status)">
+                {{ tenant.status }}
+              </span>
+            </td>
+            <td class="actions-cell">
+              <button class="action-btn view-btn" (click)="viewTenant(tenant.id)" title="View Details">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="action-btn edit-btn" (click)="editTenant(tenant.id)" title="Edit Tenant">
+                <i class="fas fa-edit"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Loading State -->
+      <div class="loading-indicator" *ngIf="isLoading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading tenants...</p>
+      </div>
+      
+      <!-- Empty State -->
+      <div class="no-tenants" *ngIf="!isLoading && tenants.length === 0">
+        <i class="fas fa-users"></i>
+        <h2>No tenants found</h2>
+        <p>There are no tenants matching your search criteria or you haven't added any tenants yet.</p>
+        <button class="btn-primary" (click)="addTenant()">Add Your First Tenant</button>
+      </div>
+    </div>
+  </div>
+</div> 

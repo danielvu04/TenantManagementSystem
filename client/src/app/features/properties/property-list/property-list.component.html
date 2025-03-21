@@ -1,133 +1,180 @@
-<div class="property-list">
-  <div class="container">
-    <div class="page-header">
-      <h1>Properties</h1>
-      <div class="header-actions" *ngIf="isLandlord">
-        <button class="btn-primary" (click)="addProperty()">
-          <i class="fas fa-plus"></i> Add Property
-        </button>
-      </div>
+<div class="properties-page">
+  <section class="properties-hero">
+    <div class="overlay"></div>
+    <div class="container">
+      <h1>Find Your Perfect Home</h1>
+      <p>Browse our available properties in the Minneapolis area</p>
     </div>
+  </section>
 
-    <div class="filters">
-      <div class="search-box">
-        <input type="text" placeholder="Search properties..." [(ngModel)]="searchTerm" (input)="applyFilters()">
-        <button><i class="fas fa-search"></i></button>
-      </div>
-      
-      <div class="filter-group">
-        <select [(ngModel)]="filterOptions.status" (change)="applyFilters()">
-          <option value="all">All Status</option>
-          <option value="available">Available</option>
-          <option value="occupied">Occupied</option>
-          <option value="maintenance">Under Maintenance</option>
-        </select>
-      </div>
-      
-      <div class="filter-group" *ngIf="isLandlord">
-        <button class="btn-outline" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'">
-          <i class="fas fa-th"></i>
-        </button>
-        <button class="btn-outline" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">
-          <i class="fas fa-list"></i>
-        </button>
-      </div>
-    </div>
-
-    <div *ngIf="isLoading" class="loading-spinner">
-      <div class="spinner"></div>
-      <p>Loading properties...</p>
-    </div>
-
-    <div *ngIf="!isLoading && properties.length === 0" class="empty-state">
-      <div class="empty-illustration">
-        <i class="fas fa-home"></i>
-      </div>
-      <h2>No properties found</h2>
-      <p *ngIf="isLandlord">Add your first property to get started.</p>
-      <p *ngIf="!isLandlord">There are no available properties at the moment.</p>
-      <button *ngIf="isLandlord" class="btn-primary" (click)="addProperty()">Add Property</button>
-    </div>
-
-    <div *ngIf="!isLoading && properties.length > 0" [ngClass]="{'property-grid': viewMode === 'grid', 'property-table': viewMode === 'list'}">
-      <!-- Grid View -->
-      <div *ngIf="viewMode === 'grid'" class="property-cards">
-        <div class="property-card" *ngFor="let property of properties">
-          <div class="property-image" [style.backgroundImage]="'url(' + (property.images && property.images.length ? property.images[0] : 'assets/images/property-placeholder.jpg') + ')'">
-            <div class="property-status" [ngClass]="property.status">{{ property.status }}</div>
-          </div>
-          <div class="property-details">
-            <h3>{{ property.name }}</h3>
-            <p class="property-address">{{ property.address }}</p>
-            <div class="property-stats">
-              <div class="stat">
-                <span class="stat-value">{{ property.units }}</span>
-                <span class="stat-label">Units</span>
-              </div>
-              <div class="stat">
-                <span class="stat-value">{{ property.occupiedUnits }}</span>
-                <span class="stat-label">Occupied</span>
-              </div>
-              <div class="stat" *ngIf="isLandlord">
-                <span class="stat-value">{{ property.income | currency }}</span>
-                <span class="stat-label">Income</span>
-              </div>
+  <section class="properties-container">
+    <div class="container">
+      <!-- Search and Filters -->
+      <div class="search-filter-section">
+        <div class="search-container">
+          <input 
+            type="text" 
+            placeholder="Search by location, property name, features..." 
+            [(ngModel)]="searchTerm"
+            class="search-input"
+          >
+          <button class="search-btn" (click)="searchProperties()">
+            <i class="fas fa-search"></i> Search
+          </button>
+        </div>
+        
+        <div class="filters-container">
+          <div class="filter-group">
+            <label>Price Range</label>
+            <div class="range-inputs">
+              <input 
+                type="number" 
+                placeholder="Min $" 
+                [(ngModel)]="filter.price.min"
+                class="filter-input"
+              >
+              <span>-</span>
+              <input 
+                type="number" 
+                placeholder="Max $" 
+                [(ngModel)]="filter.price.max"
+                class="filter-input"
+              >
             </div>
+          </div>
+          
+          <div class="filter-group">
+            <label>Bedrooms</label>
+            <select [(ngModel)]="filter.beds" class="filter-select">
+              <option [ngValue]="null">Any</option>
+              <option [ngValue]="0">Studio</option>
+              <option [ngValue]="1">1+</option>
+              <option [ngValue]="2">2+</option>
+              <option [ngValue]="3">3+</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label>Bathrooms</label>
+            <select [(ngModel)]="filter.baths" class="filter-select">
+              <option [ngValue]="null">Any</option>
+              <option [ngValue]="1">1+</option>
+              <option [ngValue]="1.5">1.5+</option>
+              <option [ngValue]="2">2+</option>
+              <option [ngValue]="2.5">2.5+</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label>Square Feet</label>
+            <div class="range-inputs">
+              <input 
+                type="number" 
+                placeholder="Min" 
+                [(ngModel)]="filter.sqft.min"
+                class="filter-input"
+              >
+              <span>-</span>
+              <input 
+                type="number" 
+                placeholder="Max" 
+                [(ngModel)]="filter.sqft.max"
+                class="filter-input"
+              >
+            </div>
+          </div>
+          
+          <button class="btn btn-apply-filter" (click)="applyFilters()">
+            <i class="fas fa-filter"></i> Apply Filters
+          </button>
+        </div>
+      </div>
+      
+      <!-- Property Results Count -->
+      <div class="results-summary">
+        <p>Showing {{ filteredProperties.length }} properties</p>
+        <div class="sort-options">
+          <label>Sort by:</label>
+          <select [(ngModel)]="sortOption" (change)="sortProperties()" class="sort-select">
+            <option value="priceAsc">Price (Low to High)</option>
+            <option value="priceDesc">Price (High to Low)</option>
+            <option value="bedsDesc">Most Bedrooms</option>
+            <option value="sqftDesc">Largest Size</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Property Grid -->
+      <div class="properties-grid">
+        <div *ngFor="let property of filteredProperties" class="property-card">
+          <div class="property-img">
+            <img [src]="getPropertyImageUrl(property)" [alt]="property.name">
+            <span class="property-status" [class.available]="property.status === 'available'">
+              {{ property.status | titlecase }}
+            </span>
+          </div>
+          <div class="property-info">
+            <h3>{{ property.name }}</h3>
+            <p class="property-address">{{ getFormattedAddress(property) }}</p>
+            <div class="property-specs">
+              <span><i class="fas fa-bed"></i> {{ getPropertyBedsLabel(property) }}</span>
+              <span><i class="fas fa-bath"></i> {{ getPropertyBathsLabel(property) }}</span>
+              <span><i class="fas fa-ruler-combined"></i> {{ getPropertySqftLabel(property) }}</span>
+            </div>
+            <p class="property-price">{{ getPropertyPriceLabel(property) }}</p>
             <div class="property-actions">
-              <button class="btn-primary" (click)="viewProperty(property._id)">View Details</button>
-              <button *ngIf="isLandlord" class="btn-outline" (click)="editProperty(property._id)">Edit</button>
+              <a [routerLink]="['/properties', property.id]" class="btn btn-outline">View Details</a>
+              <button class="btn btn-primary" (click)="scheduleTour(property)">Schedule Tour</button>
             </div>
           </div>
         </div>
       </div>
       
-      <!-- List View -->
-      <table *ngIf="viewMode === 'list'" class="property-list-table">
-        <thead>
-          <tr>
-            <th>Property</th>
-            <th>Address</th>
-            <th>Units</th>
-            <th>Status</th>
-            <th *ngIf="isLandlord">Income</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let property of properties">
-            <td>
-              <div class="property-name">
-                <div class="property-thumbnail" [style.backgroundImage]="'url(' + (property.images && property.images.length ? property.images[0] : 'assets/images/property-placeholder.jpg') + ')'"></div>
-                <span>{{ property.name }}</span>
-              </div>
-            </td>
-            <td>{{ property.address }}</td>
-            <td>{{ property.occupiedUnits }}/{{ property.units }}</td>
-            <td><span class="status-badge" [ngClass]="property.status">{{ property.status }}</span></td>
-            <td *ngIf="isLandlord">{{ property.income | currency }}</td>
-            <td>
-              <div class="action-buttons">
-                <button class="btn-icon" (click)="viewProperty(property._id)" title="View Details">
-                  <i class="fas fa-eye"></i>
-                </button>
-                <button *ngIf="isLandlord" class="btn-icon" (click)="editProperty(property._id)" title="Edit Property">
-                  <i class="fas fa-edit"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- No Results -->
+      <div *ngIf="filteredProperties.length === 0" class="no-results">
+        <i class="fas fa-search"></i>
+        <h3>No properties found</h3>
+        <p>Try adjusting your search criteria or filters.</p>
+        <button class="btn btn-primary" (click)="resetFilters()">Reset Filters</button>
+      </div>
+      
+      <!-- Pagination -->
+      <div *ngIf="filteredProperties.length > 0" class="pagination">
+        <button 
+          [disabled]="currentPage === 1" 
+          (click)="changePage(currentPage - 1)" 
+          class="page-btn"
+        >
+          <i class="fas fa-chevron-left"></i> Previous
+        </button>
+        
+        <div class="page-numbers">
+          <span *ngFor="let page of getPageNumbers()" 
+                [class.active]="page === currentPage"
+                (click)="changePage(page)">
+            {{ page }}
+          </span>
+        </div>
+        
+        <button 
+          [disabled]="currentPage === totalPages" 
+          (click)="changePage(currentPage + 1)" 
+          class="page-btn"
+        >
+          Next <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
     </div>
-    
-    <div class="pagination" *ngIf="totalPages > 1">
-      <button [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)">
-        <i class="fas fa-chevron-right"></i>
-      </button>
+  </section>
+  
+  <!-- Contact Section -->
+  <section class="contact-section">
+    <div class="container">
+      <div class="contact-content">
+        <h2>Can't find what you're looking for?</h2>
+        <p>Contact our team to get help finding your perfect home or to be notified when new properties become available.</p>
+        <button class="btn btn-primary" (click)="contactAgent()">Contact an Agent</button>
+      </div>
     </div>
-  </div>
+  </section>
 </div>

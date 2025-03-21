@@ -1,0 +1,109 @@
+<div class="payment-management">
+  <div class="container">
+    <div class="page-header">
+      <h1>Payment Management</h1>
+      <button class="add-payment-btn" (click)="recordPayment()">
+        <i class="fas fa-plus"></i> Record Payment
+      </button>
+    </div>
+    
+    <!-- Search and Filter Section -->
+    <div class="search-filter-section">
+      <div class="search-box">
+        <input 
+          type="text" 
+          placeholder="Search by tenant, reference or unit..." 
+          [(ngModel)]="searchTerm"
+        >
+        <button (click)="filterPayments()">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+      
+      <div class="filter-options">
+        <div class="filter-item">
+          <label>Status:</label>
+          <select [(ngModel)]="selectedStatus" (change)="filterPayments()">
+            <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+          </select>
+        </div>
+        
+        <div class="filter-item">
+          <label>Property:</label>
+          <select [(ngModel)]="selectedProperty" (change)="filterPayments()">
+            <option value="All">All Properties</option>
+            <option *ngFor="let property of properties" [value]="property.name">{{ property.name }}</option>
+          </select>
+        </div>
+        
+        <button class="reset-filters" (click)="resetFilters()">
+          <i class="fas fa-undo"></i> Reset
+        </button>
+      </div>
+    </div>
+    
+    <!-- Payments Table -->
+    <div class="payments-table-container">
+      <table class="payments-table" *ngIf="!isLoading && payments.length > 0">
+        <thead>
+          <tr>
+            <th>Reference</th>
+            <th>Tenant</th>
+            <th>Property</th>
+            <th>Unit</th>
+            <th>Amount</th>
+            <th>Due Date</th>
+            <th>Payment Date</th>
+            <th>Status</th>
+            <th>Method</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let payment of payments" [ngClass]="{'overdue': isOverdue(payment)}">
+            <td>{{ payment.reference }}</td>
+            <td>{{ payment.tenantName }}</td>
+            <td>{{ payment.propertyName }}</td>
+            <td>{{ payment.unitNumber }}</td>
+            <td>${{ payment.amount | number:'1.2-2' }}</td>
+            <td>{{ payment.dueDate | date:'MM/dd/yyyy' }}</td>
+            <td>{{ formatDate(payment.paymentDate) }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(payment.status)">
+                {{ payment.status }}
+              </span>
+            </td>
+            <td>{{ payment.paymentMethod || 'N/A' }}</td>
+            <td class="actions-cell">
+              <button class="action-btn view-btn" (click)="viewPayment(payment.id)" title="View Details">
+                <i class="fas fa-eye"></i>
+              </button>
+              
+              <button class="action-btn mark-paid-btn" *ngIf="payment.status !== 'Paid'" (click)="markAsPaid(payment)" title="Mark as Paid">
+                <i class="fas fa-check"></i>
+              </button>
+              
+              <button class="action-btn remind-btn" *ngIf="payment.status !== 'Paid'" (click)="sendReminder(payment)" title="Send Reminder">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Loading State -->
+      <div class="loading-state" *ngIf="isLoading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading payments...</p>
+      </div>
+      
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!isLoading && payments.length === 0">
+        <i class="fas fa-file-invoice-dollar"></i>
+        <h3>No payments found</h3>
+        <p>No payments match your search criteria or no payments have been recorded yet.</p>
+        <button class="primary-btn" (click)="recordPayment()">Record a Payment</button>
+      </div>
+    </div>
+  </div>
+</div> 
