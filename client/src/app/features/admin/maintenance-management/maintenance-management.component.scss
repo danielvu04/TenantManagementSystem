@@ -1,3 +1,4 @@
+@use "sass:color";
 // Shared variables
 $primary-color: #3e64ff;
 $secondary-color: #5edfff;
@@ -66,7 +67,7 @@ $transition-speed: 0.3s;
       transition: background-color $transition-speed;
       
       &:hover {
-        background-color: darken($primary-color, 10%);
+        background-color: color.adjust($primary-color, $lightness: -10%);
       }
       
       i {
@@ -119,7 +120,7 @@ $transition-speed: 0.3s;
         transition: background-color $transition-speed;
         
         &:hover {
-          background-color: darken($primary-color, 10%);
+          background-color: color.adjust($primary-color, $lightness: -10%);
         }
       }
     }
@@ -172,7 +173,7 @@ $transition-speed: 0.3s;
         
         &:hover {
           background-color: $light-color;
-          border-color: darken($border-color, 10%);
+          border-color: color.adjust($border-color, $lightness: -10%);
         }
       }
       
@@ -295,7 +296,7 @@ $transition-speed: 0.3s;
           transition: all $transition-speed;
           
           &:hover {
-            background-color: darken($light-color, 5%);
+            background-color: color.adjust($light-color, $lightness: -5%);
           }
           
           &.view-btn:hover {
@@ -389,7 +390,7 @@ $transition-speed: 0.3s;
       }
       
       p {
-        color: lighten($dark-color, 20%);
+        color: color.adjust($dark-color, $lightness: 20%);
         margin-bottom: 1.5rem;
         max-width: 500px;
       }
@@ -405,7 +406,7 @@ $transition-speed: 0.3s;
         transition: background-color $transition-speed;
         
         &:hover {
-          background-color: darken($primary-color, 10%);
+          background-color: color.adjust($primary-color, $lightness: -10%);
         }
       }
     }

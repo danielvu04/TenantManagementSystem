@@ -6,7 +6,11 @@
     "start": "ng serve --port 4201",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "build:prod": "ng build --configuration=production",
+    "deploy:s3": "aws s3 sync dist/client s3://anhuaproperties-website --delete",
+    "invalidate:cf": "aws cloudfront create-invalidation --distribution-id E3JXE3QOCXQVKB --paths \"/*\"",
+    "deploy": "npm run build:prod && npm run deploy:s3 && npm run invalidate:cf"
   },
   "private": true,
   "dependencies": {

@@ -1,3 +1,4 @@
+@use "sass:color";
 // Shared variables
 $primary-color: #3498db;
 $secondary-color: #2c3e50;
@@ -53,12 +54,12 @@ $transition: all 0.3s ease;
       color: $white;
       
       &:hover, &:focus {
-        background-color: darken($primary-color, 10%);
+        background-color: color.adjust($primary-color, $lightness: -10%);
         transform: translateY(-2px);
       }
       
       &:disabled {
-        background-color: lighten($primary-color, 20%);
+        background-color: color.adjust($primary-color, $lightness: 20%);
         cursor: not-allowed;
       }
     }
@@ -69,7 +70,7 @@ $transition: all 0.3s ease;
       border: 1px solid $primary-color;
       
       &:hover, &:focus {
-        background-color: transparentize($primary-color, 0.9);
+        background-color: color.adjust($primary-color, $alpha: -0.9);
         transform: translateY(-2px);
       }
     }
@@ -154,7 +155,7 @@ $transition: all 0.3s ease;
           transition: $transition;
           
           &:hover {
-            background-color: darken($primary-color, 10%);
+            background-color: color.adjust($primary-color, $lightness: -10%);
           }
           
           i {
@@ -703,7 +704,7 @@ $transition: all 0.3s ease;
           }
           
           .activity-icon {
-            background-color: lighten($primary-color, 35%);
+            background-color: color.adjust($primary-color, $lightness: 35%);
             color: $primary-color;
             width: 40px;
             height: 40px;
@@ -750,7 +751,7 @@ $transition: all 0.3s ease;
           transition: $transition;
           
           &:hover {
-            background-color: darken($light-gray, 5%);
+            background-color: color.adjust($light-gray, $lightness: -5%);
             transform: translateY(-2px);
           }
           

@@ -1,3 +1,4 @@
+@use "sass:color";
 // Shared variables
 $primary-color: #3498db;
 $secondary-color: #2c3e50;
@@ -162,7 +163,7 @@ $transition: all 0.3s ease;
       margin-left: 0.5rem;
       
       &:hover {
-        color: darken($danger-color, 10%);
+        color: color.adjust($danger-color, $lightness: -10%);
       }
     }
   }
@@ -310,11 +311,11 @@ $transition: all 0.3s ease;
       color: white;
       
       &:hover {
-        background-color: darken($primary-color, 10%);
+        background-color: color.adjust($primary-color, $lightness: -10%);
       }
       
       &:disabled {
-        background-color: lighten($primary-color, 20%);
+        background-color: color.adjust($primary-color, $lightness: 20%);
         cursor: not-allowed;
       }
       

@@ -1,3 +1,4 @@
+@use "sass:color";
 // Shared variables
 $primary-color: #3498db;
 $secondary-color: #2c3e50;
@@ -270,7 +271,7 @@ $transition: all 0.3s ease;
         color: white;
         
         &:hover {
-          background-color: darken($primary-color, 10%);
+          background-color: color.adjust($primary-color, $lightness: -10%);
         }
       }
       
